@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Seek</title>
+  <style>
+  #vid {
+    width: 200px;
+  }
+
+  .err-msg {
+    color: brown;
+  }
+  </style>
+</head>
+<body>
+<h2>Video Seek Issue</h2>
+<p>The following video has a duration of 5.04 seconds. If I click "seek to 5s" button first, then click "seek to 0s" button (the seeking seems failed), and finally click "play", it will throw an error: <span className="err-msg">Uncaught (in promise) AbortError: The play() request was interrupted by end of playback.</span></p>
+<p>However, if the video plays to the end without any seeking, I can seek back to 0 successfully.</p>
+<p>Also, if I seek to 5s first, then click seek to 0s several times, it will succeed at some time.</p>
+<button id="seek5">Seek to 5s</button>
+<button id="seek0">Seek to 0s</button>
+<button id="ppBtn">Play</button>
+<div>
+  <video id="vid" src="https://a1.alibabausercontent.com/prod/feupload/user/p/007c14f0-615d-11f0-aab9-ef57b2c2629b.mp4_.mp4" />
+</div>
+<script>
+const vid = document.getElementById('vid');
+const seek5 = document.getElementById('seek5');
+const seek0 = document.getElementById('seek0');
+const ppBtn = document.getElementById('ppBtn');
+
+let isPlaying = false;
+
+function play() {
+  vid.play().then(() => {
+    isPlaying = true
+    ppBtn.textContent = 'Pause';
+  });
+}
+
+function pause() {
+  vid.pause();
+  isPlaying = false;
+  ppBtn.textContent = 'Play';
+}
+
+vid.addEventListener('ended', () => {
+  pause();
+});
+
+seek5.addEventListener('click', () => {
+  vid.currentTime = 5;
+});
+
+seek0.addEventListener('click', () => {
+  vid.currentTime = 0;
+});
+
+ppBtn.addEventListener('click', () => {
+  if (isPlaying) {
+    pause();
+  } else {
+    play();
+  }
+});
+</script>
+</body>
+</html>
